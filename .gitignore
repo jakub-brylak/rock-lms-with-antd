@@ -4,6 +4,7 @@ Thumbs.db
 
 # === JAVA / MAVEN (backend) ===
 backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
 *.class
 *.log
 *.jar
@@ -33,10 +34,6 @@ npm-debug.log
 yarn-debug.log
 yarn-error.log
 *.tsbuildinfo
-
-# === OPENAPI GENERATED ===
-backend/src/main/java/com/app/api/
-backend/src/main/java/com/app/dto/
 
 # === DOCKER / MISC ===
 *.pid
