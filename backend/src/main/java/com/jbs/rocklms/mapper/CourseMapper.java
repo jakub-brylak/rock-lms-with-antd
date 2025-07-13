@@ -2,9 +2,9 @@ package com.jbs.rocklms.mapper;
 
 import com.jbs.rocklms.entity.Course;
 import com.jbs.rocklms.model.CourseDto;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.stereotype.Component;
 
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 @Component
@@ -19,7 +19,9 @@ public class CourseMapper {
         dto.setStatus(CourseDto.StatusEnum.valueOf(course.getStatus().name()));
         
         if (course.getPublishedAt() != null) {
-            dto.setPublishedAt(course.getPublishedAt().atOffset(ZoneOffset.UTC));
+            dto.setPublishedAt(JsonNullable.of(course.getPublishedAt().atOffset(ZoneOffset.UTC)));
+        } else {
+            dto.setPublishedAt(JsonNullable.undefined());
         }
         
         return dto;

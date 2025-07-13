@@ -7,11 +7,17 @@ info:
 servers:
   - url: http://localhost:8080/api
 
+tags:
+  - name: Courses
+    description: Course management operations
+
 paths:
   /courses:
     get:
       operationId: findAllCourses
       summary: Retrieve courses with optional status filtering
+      tags:
+        - Courses
       parameters:
         - in: query
           name: status
@@ -32,6 +38,8 @@ paths:
     post:
       operationId: createCourse
       summary: Create new course
+      tags:
+        - Courses
       requestBody:
         required: true
         content:
@@ -50,6 +58,8 @@ paths:
     get:
       operationId: findCourseById
       summary: Retrieve course by identifier
+      tags:
+        - Courses
       parameters:
         - in: path
           name: id
@@ -68,6 +78,8 @@ paths:
     put:
       operationId: updateCourse
       summary: Modify existing course
+      tags:
+        - Courses
       parameters:
         - in: path
           name: id
@@ -92,6 +104,8 @@ paths:
     delete:
       operationId: removeCourse
       summary: Remove course permanently
+      tags:
+        - Courses
       parameters:
         - in: path
           name: id
@@ -106,6 +120,8 @@ paths:
     post:
       operationId: publishCourse
       summary: Make course available to students
+      tags:
+        - Courses
       parameters:
         - in: path
           name: id
@@ -126,6 +142,8 @@ paths:
     post:
       operationId: archiveCourse
       summary: Move course to archived state
+      tags:
+        - Courses
       parameters:
         - in: path
           name: id
