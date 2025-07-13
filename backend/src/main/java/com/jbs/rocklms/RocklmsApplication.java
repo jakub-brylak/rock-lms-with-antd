@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RocklmsApplication {
+public class RockLmsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RocklmsApplication.class, args);
+		SpringApplication.run(RockLmsApplication.class, args);
 	}
 
 }
