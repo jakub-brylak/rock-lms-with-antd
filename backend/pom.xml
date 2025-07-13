@@ -89,7 +89,7 @@
 							<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
 							<configOptions>
 								<delegatePattern>true</delegatePattern>
-								<interfaceOnly>true</interfaceOnly>
+								<interfaceOnly>false</interfaceOnly>
 								<useSpringBoot3>true</useSpringBoot3>
 								<useTags>true</useTags>
 							</configOptions>
