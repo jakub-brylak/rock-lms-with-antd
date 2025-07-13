@@ -10,7 +10,8 @@ servers:
 paths:
   /courses:
     get:
-      summary: Get all courses with optional status filter
+      operationId: findAllCourses
+      summary: Retrieve courses with optional status filtering
       parameters:
         - in: query
           name: status
@@ -29,7 +30,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/CourseDto'
     post:
-      summary: Create a new course
+      operationId: createCourse
+      summary: Create new course
       requestBody:
         required: true
         content:
@@ -38,7 +40,7 @@ paths:
               $ref: '#/components/schemas/CourseCreateRequest'
       responses:
         '201':
-          description: Course created
+          description: Course created successfully
           content:
             application/json:
               schema:
@@ -46,7 +48,8 @@ paths:
 
   /courses/{id}:
     get:
-      summary: Get a course by ID
+      operationId: findCourseById
+      summary: Retrieve course by identifier
       parameters:
         - in: path
           name: id
@@ -55,7 +58,7 @@ paths:
             type: integer
       responses:
         '200':
-          description: Course found
+          description: Course retrieved successfully
           content:
             application/json:
               schema:
@@ -63,7 +66,8 @@ paths:
         '404':
           description: Course not found
     put:
-      summary: Update a course (only if not archived)
+      operationId: updateCourse
+      summary: Modify existing course
       parameters:
         - in: path
           name: id
@@ -78,15 +82,16 @@ paths:
               $ref: '#/components/schemas/CourseUpdateRequest'
       responses:
         '200':
-          description: Course updated
+          description: Course updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseDto'
         '400':
-          description: Cannot edit archived course
+          description: Cannot modify archived course
     delete:
-      summary: Delete a course
+      operationId: removeCourse
+      summary: Remove course permanently
       parameters:
         - in: path
           name: id
@@ -95,11 +100,12 @@ paths:
             type: integer
       responses:
         '204':
-          description: Course deleted
+          description: Course removed successfully
 
   /courses/{id}/publish:
     post:
-      summary: Publish a course
+      operationId: publishCourse
+      summary: Make course available to students
       parameters:
         - in: path
           name: id
@@ -108,17 +114,18 @@ paths:
             type: integer
       responses:
         '200':
-          description: Course published
+          description: Course published successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseDto'
         '400':
-          description: Missing title or duration
+          description: Course missing required fields
 
   /courses/{id}/archive:
     post:
-      summary: Archive a course
+      operationId: archiveCourse
+      summary: Move course to archived state
       parameters:
         - in: path
           name: id
@@ -127,7 +134,7 @@ paths:
             type: integer
       responses:
         '200':
-          description: Course archived
+          description: Course archived successfully
           content:
             application/json:
               schema:
