@@ -30,4 +30,4 @@ jobs:
 
       - name: Build and test backend
         working-directory: backend
-        run: ./mvnw clean install
+        run: ./mvnw clean test
