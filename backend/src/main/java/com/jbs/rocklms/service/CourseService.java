@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ public class CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         
-        if (!course.canBeEdited()) {
+        if (!canBeEdited(course)) {
             throw new IllegalStateException("Cannot edit archived course");
         }
         
@@ -56,15 +57,38 @@ public class CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         
-        course.publish();
+        validateCourseForPublication(course);
+        
+        publish(course);
         return courseRepository.save(course);
+    }
+    
+    private void validateCourseForPublication(Course course) {
+        if (course.getTitle() == null || course.getTitle().trim().isEmpty()) {
+            throw new IllegalStateException("Cannot publish course: title is required");
+        }
+        if (course.getDuration() == null || course.getDuration() < 1) {
+            throw new IllegalStateException("Cannot publish course: duration must be greater than 0");
+        }
+        if (course.getStatus() == Course.CourseStatus.ARCHIVED) {
+            throw new IllegalStateException("Cannot publish archived course");
+        }
     }
     
     public Course archiveCourse(Long id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         
-        course.archive();
+        course.setStatus(Course.CourseStatus.ARCHIVED);
         return courseRepository.save(course);
+    }
+    
+    private void publish(Course course) {
+        course.setStatus(Course.CourseStatus.PUBLISHED);
+        course.setPublishedAt(LocalDateTime.now());
+    }
+    
+    private boolean canBeEdited(Course course) {
+        return course.getStatus() != Course.CourseStatus.ARCHIVED;
     }
 }

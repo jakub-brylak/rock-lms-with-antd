@@ -2,8 +2,6 @@ package com.jbs.rocklms.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,15 +12,13 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotBlank
     @Column(nullable = false)
     private String title;
     
     private String description;
     
-    @NotNull
     @Min(1)
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer duration;
     
     @Enumerated(EnumType.STRING)
@@ -60,20 +56,4 @@ public class Course {
     
     public LocalDateTime getPublishedAt() { return publishedAt; }
     public void setPublishedAt(LocalDateTime publishedAt) { this.publishedAt = publishedAt; }
-    
-    public void publish() {
-        if (title == null || title.trim().isEmpty() || duration == null || duration < 1) {
-            throw new IllegalStateException("Cannot publish course: missing title or invalid duration");
-        }
-        this.status = CourseStatus.PUBLISHED;
-        this.publishedAt = LocalDateTime.now();
-    }
-    
-    public void archive() {
-        this.status = CourseStatus.ARCHIVED;
-    }
-    
-    public boolean canBeEdited() {
-        return status != CourseStatus.ARCHIVED;
-    }
 }
