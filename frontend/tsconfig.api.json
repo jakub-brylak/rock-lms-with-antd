@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.app.json",
+    "compilerOptions": {
+        "noUnusedLocals": false,
+        "noUnusedParameters": false
+    },
+    "include": ["src/api/apis/**/*.ts", "src/api/models/**/*.ts"],
+    "exclude": []
+}
