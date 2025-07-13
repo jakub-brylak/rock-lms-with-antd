@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ public class CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         
-        if (!course.canBeEdited()) {
+        if (!canBeEdited(course)) {
             throw new IllegalStateException("Cannot edit archived course");
         }
         
@@ -58,7 +59,7 @@ public class CourseService {
         
         validateCourseForPublication(course);
         
-        course.publish();
+        publish(course);
         return courseRepository.save(course);
     }
     
@@ -78,7 +79,16 @@ public class CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         
-        course.archive();
+        course.setStatus(Course.CourseStatus.ARCHIVED);
         return courseRepository.save(course);
+    }
+    
+    private void publish(Course course) {
+        course.setStatus(Course.CourseStatus.PUBLISHED);
+        course.setPublishedAt(LocalDateTime.now());
+    }
+    
+    private boolean canBeEdited(Course course) {
+        return course.getStatus() != Course.CourseStatus.ARCHIVED;
     }
 }

@@ -60,20 +60,4 @@ public class Course {
     
     public LocalDateTime getPublishedAt() { return publishedAt; }
     public void setPublishedAt(LocalDateTime publishedAt) { this.publishedAt = publishedAt; }
-    
-    public void publish() {
-        this.status = CourseStatus.PUBLISHED;
-        this.publishedAt = LocalDateTime.now();
-    }
-    
-    public void archive() {
-        this.status = CourseStatus.ARCHIVED;
-    }
-    
-    public boolean canBeEdited() {
-        return status != CourseStatus.ARCHIVED;
-    }
-}
-        return status != CourseStatus.ARCHIVED;
-    }
 }
