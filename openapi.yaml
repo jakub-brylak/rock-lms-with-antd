@@ -1,0 +1,179 @@
+openapi: 3.0.3
+info:
+  title: Rock LMS Course Management API
+  version: 1.0.0
+  description: API for managing Rock LMS courses (CRUD + publish/archive)
+
+servers:
+  - url: http://localhost:8080/api
+
+paths:
+  /courses:
+    get:
+      summary: Get all courses with optional status filter
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [DRAFT, PUBLISHED, ARCHIVED]
+          required: false
+          description: Filter courses by status
+      responses:
+        '200':
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseDto'
+    post:
+      summary: Create a new course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseCreateRequest'
+      responses:
+        '201':
+          description: Course created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseDto'
+
+  /courses/{id}:
+    get:
+      summary: Get a course by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Course found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseDto'
+        '404':
+          description: Course not found
+    put:
+      summary: Update a course (only if not archived)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseUpdateRequest'
+      responses:
+        '200':
+          description: Course updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseDto'
+        '400':
+          description: Cannot edit archived course
+    delete:
+      summary: Delete a course
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Course deleted
+
+  /courses/{id}/publish:
+    post:
+      summary: Publish a course
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Course published
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseDto'
+        '400':
+          description: Missing title or duration
+
+  /courses/{id}/archive:
+    post:
+      summary: Archive a course
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Course archived
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseDto'
+
+components:
+  schemas:
+    CourseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        duration:
+          type: integer
+          minimum: 1
+        status:
+          type: string
+          enum: [DRAFT, PUBLISHED, ARCHIVED]
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    CourseCreateRequest:
+      type: object
+      required: [title, duration]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        duration:
+          type: integer
+          minimum: 1
+
+    CourseUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        duration:
+          type: integer
+          minimum: 1
