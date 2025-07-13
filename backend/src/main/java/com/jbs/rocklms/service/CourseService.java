@@ -56,8 +56,22 @@ public class CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         
+        validateCourseForPublication(course);
+        
         course.publish();
         return courseRepository.save(course);
+    }
+    
+    private void validateCourseForPublication(Course course) {
+        if (course.getTitle() == null || course.getTitle().trim().isEmpty()) {
+            throw new IllegalStateException("Cannot publish course: title is required");
+        }
+        if (course.getDuration() == null || course.getDuration() < 1) {
+            throw new IllegalStateException("Cannot publish course: duration must be greater than 0");
+        }
+        if (course.getStatus() == Course.CourseStatus.ARCHIVED) {
+            throw new IllegalStateException("Cannot publish archived course");
+        }
     }
     
     public Course archiveCourse(Long id) {

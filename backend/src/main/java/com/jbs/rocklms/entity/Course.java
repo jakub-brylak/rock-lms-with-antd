@@ -62,9 +62,6 @@ public class Course {
     public void setPublishedAt(LocalDateTime publishedAt) { this.publishedAt = publishedAt; }
     
     public void publish() {
-        if (title == null || title.trim().isEmpty() || duration == null || duration < 1) {
-            throw new IllegalStateException("Cannot publish course: missing title or invalid duration");
-        }
         this.status = CourseStatus.PUBLISHED;
         this.publishedAt = LocalDateTime.now();
     }
@@ -74,6 +71,9 @@ public class Course {
     }
     
     public boolean canBeEdited() {
+        return status != CourseStatus.ARCHIVED;
+    }
+}
         return status != CourseStatus.ARCHIVED;
     }
 }
