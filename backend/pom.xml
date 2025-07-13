@@ -90,24 +90,24 @@
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<version>${openapi-generator-version}</version>
+				<configuration>
+					<inputSpec>${project.basedir}/../openapi.yaml</inputSpec>
+					<generatorName>spring</generatorName>
+					<apiPackage>com.jbs.rocklms.api</apiPackage>
+					<modelPackage>com.jbs.rocklms.model</modelPackage>
+					<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+					<configOptions>
+						<delegatePattern>true</delegatePattern>
+						<interfaceOnly>false</interfaceOnly>
+						<useSpringBoot3>true</useSpringBoot3>
+						<useTags>true</useTags>
+					</configOptions>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
 							<goal>generate</goal>
 						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/../openapi.yaml</inputSpec>
-							<generatorName>spring</generatorName>
-							<apiPackage>com.jbs.rocklms.api</apiPackage>
-							<modelPackage>com.jbs.rocklms.model</modelPackage>
-							<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
-							<configOptions>
-								<delegatePattern>true</delegatePattern>
-								<interfaceOnly>false</interfaceOnly>
-								<useSpringBoot3>true</useSpringBoot3>
-								<useTags>true</useTags>
-							</configOptions>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>

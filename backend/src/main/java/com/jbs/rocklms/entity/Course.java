@@ -77,6 +77,3 @@ public class Course {
         return status != CourseStatus.ARCHIVED;
     }
 }
-        return status != CourseStatus.ARCHIVED;
-    }
-}
