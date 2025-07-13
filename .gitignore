@@ -12,8 +12,9 @@ backend/target/
 *.ipr
 *.iws
 
-# === SPRING TOOL SUITE / IntelliJ ===
+# === SPRING TOOL SUITE / IDEs ===
 .idea/
+.vscode/
 *.swp
 *.swo
 *.bak
