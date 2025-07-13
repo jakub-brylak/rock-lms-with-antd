@@ -1,38 +1,17 @@
-version: '3.8'
+version: "3.9"
 
 services:
   postgres:
-    image: postgres:17-alpine
-    container_name: rocklms-db
-    environment:
-      POSTGRES_DB: rocklms
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    image: postgres:17
+    container_name: postgres
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - rocklms-network
-
-  backend:
-    build:
-      context: .
-      dockerfile: ./backend/Dockerfile
-    container_name: rocklms-backend
-    depends_on:
-      - postgres
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rocklms
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-    ports:
-      - "8080:8080"
-    networks:
-      - rocklms-network
+      POSTGRES_DB: rocklms
+      POSTGRES_USER: rocklms-user
+      POSTGRES_PASSWORD: rocklms-pass
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
-
-networks:
-  rocklms-network:
+  postgres-data:

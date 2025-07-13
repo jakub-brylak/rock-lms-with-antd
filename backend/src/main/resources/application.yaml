@@ -3,11 +3,11 @@ spring:
     name: rocklms
   flyway:
     enabled: true
-    locations: classpath:db/migration
+    locations: classpath:db/migration,classpath:db/dev_migration
   datasource:
     url: jdbc:postgresql://localhost:5432/rocklms
-    username: rocklms
-    password: rocklms
+    username: rocklms-user
+    password: rocklms-pass
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -17,3 +17,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+    devtools:
+      restart:
+        enabled: true
+      livereload:
+        enabled: false
