@@ -1,34 +1,20 @@
-import { useEffect, useState } from 'react'
-import { CoursesApi } from './api/apis/CoursesApi'
-import type { CourseDto } from './api/models/CourseDto'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { CourseList } from './components/CourseList'
+import { AddCourse } from './components/AddCourse'
+import { EditCourse } from './components/EditCourse'
 import './App.css'
 
 function App() {
-  const [courses, setCourses] = useState<CourseDto[]>([])
-
-  useEffect(() => {
-    new CoursesApi().findAllCourses()
-      .then(coursesResult => setCourses(coursesResult))
-  }, [])
-
   return (
-    <>
-      <div>
-        <h1>Rock LMS Courses</h1>
-        <ol>
-          {courses.map(course => (
-            <span key = {course.id}>
-              <li >{course.title}</li>
-              <ul>
-                <li>Description: {course.description}</li>
-                <li>Duration: {course.duration}</li>
-                <li>Status: {course.status}</li>
-              </ul>
-            </span>
-          ))}
-        </ol>
+    <Router>
+      <div style={{ padding: '24px' }}>
+        <Routes>
+          <Route path="/" element={<CourseList />} />
+          <Route path="/add" element={<AddCourse />} />
+          <Route path="/edit/:id" element={<EditCourse />} />
+        </Routes>
       </div>
-    </>
+    </Router>
   )
 }
 
