@@ -1,13 +1,46 @@
 import { useEffect, useState, type Key } from 'react'
 import { CoursesApi } from '../api/apis/CoursesApi'
 import type { CourseDto } from '../api/models/CourseDto'
-import { Table, Button, Space } from 'antd'
+import { Table, Button, Space, message } from 'antd'
 import type { TableColumnsType } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
 export function CourseList() {
   const [courses, setCourses] = useState<CourseDto[]>([])
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+
+  const loadCourses = async () => {
+    try {
+      const coursesResult = await new CoursesApi().findAllCourses()
+      setCourses(coursesResult)
+    } catch (error) {
+      message.error('Failed to load courses')
+      console.error('Error loading courses:', error)
+    }
+  }
+
+  const handleArchive = async (courseId: number) => {
+    setLoading(true)
+    try {
+      await new CoursesApi().archiveCourse({ id: courseId })
+      message.success('Course archived successfully!')
+      await loadCourses() // Refresh the list
+    } catch (error) {
+      message.error('Failed to archive course')
+      console.error('Error archiving course:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEdit = (record: CourseDto) => {
+    if (record.status === 'ARCHIVED') {
+      message.warning('Cannot edit archived courses')
+      return
+    }
+    navigate(`/edit/${record.id}`)
+  }
 
   const columns: TableColumnsType<CourseDto> = [
     {
@@ -78,15 +111,26 @@ export function CourseList() {
     {
       title: 'Actions',
       key: 'actions',
-      width: 120,
+      width: 180,
       render: (_: any, record: CourseDto) => (
-        <Space size="middle">
+        <Space size="small">
           <Button 
             type="link" 
             size="small"
-            onClick={() => navigate(`/edit/${record.id}`)}
+            disabled={record.status === 'ARCHIVED'}
+            onClick={() => handleEdit(record)}
           >
             Edit
+          </Button>
+          <Button 
+            type="link" 
+            size="small"
+            disabled={record.status === 'ARCHIVED'}
+            loading={loading}
+            onClick={() => handleArchive(record.id!)}
+            danger
+          >
+            Archive
           </Button>
         </Space>
       ),
@@ -94,8 +138,7 @@ export function CourseList() {
   ]
 
   useEffect(() => {
-    new CoursesApi().findAllCourses()
-      .then(coursesResult => setCourses(coursesResult))
+    loadCourses()
   }, [])
 
   return (
@@ -111,6 +154,10 @@ export function CourseList() {
         dataSource={courses}
         rowKey="id"
         showSorterTooltip={{ target: 'sorter-icon' }}
+        rowClassName={(record) => record.status === 'ARCHIVED' ? 'archived-row' : ''}
+        style={{
+          '--archived-row-bg': '#f5f5f5',
+        } as React.CSSProperties}
       />
     </div>
   )

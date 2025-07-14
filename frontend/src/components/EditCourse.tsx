@@ -88,6 +88,16 @@ export function EditCourse() {
     )
   }
 
+  if (course.status === 'ARCHIVED') {
+    return (
+      <div style={{ textAlign: 'center', padding: '50px' }}>
+        <h2>Cannot edit archived course</h2>
+        <p>This course has been archived and cannot be edited.</p>
+        <Button onClick={() => navigate('/')}>Go Back</Button>
+      </div>
+    )
+  }
+
   return (
     <div style={{ maxWidth: 600, margin: '0 auto', padding: '24px 0' }}>
       <Card title={`Edit Course: ${course.title}`}>
@@ -118,7 +128,7 @@ export function EditCourse() {
           <Form.Item
             label="Duration (minutes)"
             name="duration"
-            rules={[{ type: 'number', min: 1, message: 'Duration must be at least 1 minute' }]}
+            rules={[{ required: true, type: 'number', min: 1, message: 'Duration must be at least 1 minute' }]}
           >
             <InputNumber 
               placeholder="Enter duration in minutes"

@@ -7,7 +7,7 @@ import type { CourseCreateRequest } from '../api/models/CourseCreateRequest'
 interface CourseFormData {
   title: string
   description?: string
-  duration: number
+  duration?: number
 }
 
 export function AddCourse() {
@@ -21,7 +21,7 @@ export function AddCourse() {
       const request: CourseCreateRequest = {
         title: values.title,
         description: values.description,
-        duration: values.duration,
+        duration: values.duration ?? undefined,
       }
       
       await new CoursesApi().createCourse({ courseCreateRequest: request })
@@ -65,10 +65,7 @@ export function AddCourse() {
           <Form.Item
             label="Duration (minutes)"
             name="duration"
-            rules={[
-              { required: true, message: 'Please input the duration!' },
-              { type: 'number', min: 1, message: 'Duration must be at least 1 minute' }
-            ]}
+            rules={[{ required: true, type: 'number', min: 1, message: 'Duration must be at least 1 minute' }]}
           >
             <InputNumber 
               placeholder="Enter duration in minutes"
