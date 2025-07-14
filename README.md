@@ -9,7 +9,6 @@ Rock LMS is designed for music educators and students who want to create, manage
 - **Course Creation**: Instructors can create comprehensive rock music courses
 - **Content Management**: Organize course materials with titles, descriptions, and duration
 - **Publishing Workflow**: Draft → Published → Archived lifecycle management
-- **Student Access**: Published courses are available to students for enrollment
 
 ### Course Lifecycle
 
