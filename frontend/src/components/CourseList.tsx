@@ -1,7 +1,7 @@
 import { useEffect, useState, type Key } from 'react'
 import { CoursesApi } from '../api/apis/CoursesApi'
 import type { CourseDto } from '../api/models/CourseDto'
-import { Table, Button, Space, message } from 'antd'
+import { Table, Button, Space, message, Tag } from 'antd'
 import type { TableColumnsType } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
@@ -25,10 +25,37 @@ export function CourseList() {
     try {
       await new CoursesApi().archiveCourse({ id: courseId })
       message.success('Course archived successfully!')
-      await loadCourses() // Refresh the list
+      await loadCourses()
     } catch (error) {
       message.error('Failed to archive course')
       console.error('Error archiving course:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handlePublish = async (courseId: number, course: CourseDto) => {
+    if (!course.title || course.title.trim() === '') {
+      message.error('Cannot publish course: title is required')
+      return
+    }
+    if (!course.duration || course.duration < 1) {
+      message.error('Cannot publish course: duration must be greater than 0')
+      return
+    }
+    if (course.status === 'ARCHIVED') {
+      message.error('Cannot publish archived course')
+      return
+    }
+
+    setLoading(true)
+    try {
+      await new CoursesApi().publishCourse({ id: courseId })
+      message.success('Course published successfully!')
+      await loadCourses()
+    } catch (error) {
+      message.error('Failed to publish course')
+      console.error('Error publishing course:', error)
     } finally {
       setLoading(false)
     }
@@ -88,6 +115,21 @@ export function CourseList() {
       onFilter: (filterValue: boolean | Key, record: CourseDto) =>  record.status === filterValue,
       sortDirections: ['descend'],
       width: 120,
+      render: (status: string) => {
+        let color = 'default'
+        switch (status) {
+          case 'PUBLISHED':
+            color = 'green'
+            break
+          case 'DRAFT':
+            color = 'blue'
+            break
+          case 'ARCHIVED':
+            color = 'red'
+            break
+        }
+        return <Tag color={color}>{status}</Tag>
+      },
     },
     {
       title: 'Published At',
@@ -111,29 +153,47 @@ export function CourseList() {
     {
       title: 'Actions',
       key: 'actions',
-      width: 180,
-      render: (_: any, record: CourseDto) => (
-        <Space size="small">
-          <Button 
+      width: 250,
+      render: (_: any, record: CourseDto) => {
+        const canPublish = record.status === 'DRAFT' && 
+                          record.title && 
+                          record.title.trim() !== '' && 
+                          record.duration && 
+                          record.duration > 0
+        
+        return (
+          <Space size="small">
+            <Button 
+              type="link" 
+              size="small"
+              disabled={record.status === 'ARCHIVED'}
+              onClick={() => handleEdit(record)}
+            >
+              Edit
+            </Button>
+            <Button 
             type="link" 
             size="small"
-            disabled={record.status === 'ARCHIVED'}
-            onClick={() => handleEdit(record)}
-          >
-            Edit
-          </Button>
-          <Button 
-            type="link" 
-            size="small"
-            disabled={record.status === 'ARCHIVED'}
+            disabled={!canPublish}
             loading={loading}
-            onClick={() => handleArchive(record.id!)}
-            danger
-          >
-            Archive
-          </Button>
-        </Space>
-      ),
+            onClick={() => handlePublish(record.id!, record)}
+            style={{ color: canPublish ? '#52c41a' : undefined }}
+            >
+            Publish
+            </Button>
+            <Button 
+              type="link" 
+              size="small"
+              disabled={record.status === 'ARCHIVED'}
+              loading={loading}
+              onClick={() => handleArchive(record.id!)}
+              danger
+            >
+              Archive
+            </Button>
+          </Space>
+        )
+      },
     },
   ]
 
@@ -154,10 +214,6 @@ export function CourseList() {
         dataSource={courses}
         rowKey="id"
         showSorterTooltip={{ target: 'sorter-icon' }}
-        rowClassName={(record) => record.status === 'ARCHIVED' ? 'archived-row' : ''}
-        style={{
-          '--archived-row-bg': '#f5f5f5',
-        } as React.CSSProperties}
       />
     </div>
   )
