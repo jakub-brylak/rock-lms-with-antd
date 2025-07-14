@@ -21,7 +21,8 @@ export function AddCourse() {
       const request: CourseCreateRequest = {
         title: values.title,
         description: values.description,
-        duration: values.duration ?? undefined,
+        // fix me: jbrylak check constraint rules
+        duration: values.duration || 0,
       }
       
       await new CoursesApi().createCourse({ courseCreateRequest: request })
